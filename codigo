@@ -1,0 +1,88 @@
+using System;
+using System.Collections.Generic;
+
+class ContaBancaria
+{
+    public int Numero { get; private set; }
+    public string Titular { get; private set; }
+    public double Saldo { get; private set; }
+
+    public ContaBancaria(int numero, string titular)
+    {
+        Numero = numero;
+        Titular = titular;
+        Saldo = 0.0;
+    }
+
+    public void Depositar(double valor)
+    {
+        Saldo += valor;
+        Console.WriteLine($"Depósito de R${valor} realizado com sucesso. Novo saldo: R${Saldo}\n");
+    }
+
+    public void Sacar(double valor)
+    {
+        if (valor <= Saldo)
+        {
+            Saldo -= valor;
+            Console.WriteLine($"Saque de R${valor} realizado com sucesso. Novo saldo: R${Saldo}\n");
+        }
+        else
+        {
+            Console.WriteLine("Saldo insuficiente para realizar o saque. \n");
+        }
+    }
+
+    public void VerificarSaldo()
+    {
+        Console.WriteLine($"Saldo atual da conta de {Titular}: R${Saldo}\n");
+    }
+}
+
+class SistemaBancario
+{
+    static void Main()
+    {
+        HashSet<ContaBancaria> contas = new HashSet<ContaBancaria>();
+
+        // Solicitando informações do usuário para criar contas
+        for (int i = 0; i < 3; i++)
+        {
+            Console.Write("Informe o nome do titular da conta: \n");
+            string titular = Console.ReadLine();
+
+            // Gerando número aleatório para a conta
+            Random random = new Random();
+            int numeroConta = random.Next(1000, 2000);
+
+            // Criando conta e adicionando ao HashSet
+            ContaBancaria novaConta = new ContaBancaria(numeroConta, titular);
+            contas.Add(novaConta);
+        }
+
+        // Realizando operações nas contas
+        foreach (var conta in contas)
+        {
+            Console.Write($"Informe o valor para depositar na conta de {conta.Titular}: R$");
+            double valorDeposito = Convert.ToDouble(Console.ReadLine());
+            conta.Depositar(valorDeposito);
+
+            Console.Write($"Informe o valor para sacar da conta de {conta.Titular}: R$");
+            double valorSaque = Convert.ToDouble(Console.ReadLine());
+            conta.Sacar(valorSaque);
+        }
+
+        // Verificando saldos
+        foreach (var conta in contas)
+        {
+            conta.VerificarSaldo();
+        }
+
+        // Listando todas as contas existentes
+        Console.WriteLine("\nContas existentes no banco:\n");
+        foreach (var conta in contas)
+        {
+            Console.WriteLine($"Número da Conta: {conta.Numero}, Titular: {conta.Titular}, Saldo: R${conta.Saldo}\n");
+        }
+    }
+}
